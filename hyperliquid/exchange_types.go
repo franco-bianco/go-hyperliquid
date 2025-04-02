@@ -269,3 +269,13 @@ type WithdrawResponse struct {
 	Status string `json:"status"`
 	Nonce  int64
 }
+
+type UsdClassTransferAction struct {
+	Type             string  `msgpack:"type" json:"type"`
+	Amount           string  `msgpack:"amount" json:"amount"`
+	ToPerp           bool    `msgpack:"toPerp" json:"toPerp"`
+	Nonce            uint64  `msgpack:"nonce" json:"nonce"`
+	HyperliquidChain string  `msgpack:"hyperliquidChain" json:"hyperliquidChain"`
+	SignatureChainID string  `msgpack:"signatureChainId" json:"signatureChainId"`
+	Subaccount       *string `msgpack:"subaccount,omitempty" json:"subaccount,omitempty"`
+}

@@ -28,6 +28,7 @@ type IExchangeAPI interface {
 	// Account management
 	Withdraw(destination string, amount float64) (*WithdrawResponse, error)
 	UpdateLeverage(coin string, isCross bool, leverage int) (any, error)
+	TransferUsdClass(amount float64, toPerp bool, subaccount *string) (*DefaultExchangeResponse, error)
 }
 
 // Implement the IExchangeAPI interface.
@@ -462,4 +463,39 @@ func (api *ExchangeAPI) CancelAllOrders() (*OrderResponse, error) {
 		cancels = append(cancels, CancelOidWire{Asset: api.meta[order.Coin].AssetId, Oid: int(order.Oid)})
 	}
 	return api.BulkCancelOrders(cancels)
+}
+
+// TransferUsdClass transfers USDC between spot and perp accounts
+// amount: Amount of USDC to transfer
+// toPerp: true to transfer from spot to perp, false for perp to spot
+// subaccount: Optional subaccount address. Set to nil if not using a subaccount
+// https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#transfer-from-spot-account-to-perp-account-and-vice-versa
+func (api *ExchangeAPI) TransferUsdClass(amount float64, toPerp bool, subaccount *string) (*DefaultExchangeResponse, error) {
+	timestamp := GetNonce()
+	signatureChainID, chainType := api.getChainParams()
+
+	action := UsdClassTransferAction{
+		Type:             "usdClassTransfer",
+		Amount:           SizeToWire(amount, USDC_SZ_DECIMALS),
+		ToPerp:           toPerp,
+		Nonce:            timestamp,
+		HyperliquidChain: chainType,
+		SignatureChainID: signatureChainID,
+		Subaccount:       subaccount,
+	}
+
+	v, r, s, err := api.SignUsdClassTransferAction(action)
+	if err != nil {
+		api.debug("Error signing UsdClassTransfer action: %s", err)
+		return nil, err
+	}
+
+	request := ExchangeRequest{
+		Action:       action,
+		Nonce:        timestamp,
+		Signature:    ToTypedSig(r, s, v),
+		VaultAddress: nil,
+	}
+
+	return MakeUniversalRequest[DefaultExchangeResponse](api, request)
 }

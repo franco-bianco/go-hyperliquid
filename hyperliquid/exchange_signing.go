@@ -88,3 +88,31 @@ func (api *ExchangeAPI) SignWithdrawAction(action WithdrawAction) (byte, [32]byt
 	}
 	return api.SignUserSignableAction(action, types, "HyperliquidTransaction:Withdraw")
 }
+
+func (api *ExchangeAPI) SignUsdClassTransferAction(action UsdClassTransferAction) (byte, [32]byte, [32]byte, error) {
+	types := []apitypes.Type{
+		{
+			Name: "hyperliquidChain",
+			Type: "string",
+		},
+		{
+			Name: "amount",
+			Type: "string",
+		},
+		{
+			Name: "toPerp",
+			Type: "bool",
+		},
+		{
+			Name: "nonce",
+			Type: "uint64",
+		},
+	}
+	if action.Subaccount != nil {
+		types = append(types, apitypes.Type{
+			Name: "subaccount",
+			Type: "string",
+		})
+	}
+	return api.SignUserSignableAction(action, types, "HyperliquidTransaction:UsdClassTransfer")
+}

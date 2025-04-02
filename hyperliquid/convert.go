@@ -129,9 +129,7 @@ func FloatToWire(x float64, maxDecimals int, szDecimals int) string {
 			rounded = strings.TrimSuffix(rounded, "0")
 		}
 	}
-	if strings.HasSuffix(rounded, ".") {
-		rounded = strings.TrimSuffix(rounded, ".")
-	}
+	rounded = strings.TrimSuffix(rounded, ".")
 	return rounded
 }
 

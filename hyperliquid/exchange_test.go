@@ -380,3 +380,30 @@ func TestExchageAPI_TestMarketOrderSpot(t *testing.T) {
 		t.Errorf("res.Response.Data.Statuses[0].Filled.AvgPx = %v", avgPrice)
 	}
 }
+
+func TestExchangeAPI_TransferUsdClass(t *testing.T) {
+	exchangeAPI := GetExchangeAPI()
+
+	// Get the current account address
+	accountAddress := exchangeAPI.AccountAddress()
+	if accountAddress == "" {
+		t.Skip("Skipping test because account address is not set")
+	}
+
+	// Transfer a small amount from perp to spot
+	transferAmount := 1.0
+	res, err := exchangeAPI.TransferUsdClass(transferAmount, false, nil)
+	if err != nil {
+		t.Errorf("TransferUsdClass() error = %s", err)
+		return
+	}
+	t.Logf("TransferUsdClass() = %v", res)
+
+	// Transfer the same amount back from spot to perp
+	resBack, err := exchangeAPI.TransferUsdClass(transferAmount, true, nil)
+	if err != nil {
+		t.Errorf("TransferUsdClass() error = %s", err)
+		return
+	}
+	t.Logf("TransferUsdClass() (back) = %v", resBack)
+}

@@ -78,9 +78,7 @@ func TestHyperliquid_MakeSomeTradingLogic(t *testing.T) {
 
 	res4, err := client.LimitOrder(TifGtc, "ETH", 0.01, 1234.1, false, "0x1234567890abcdef1234567890abcdef")
 	if err != nil {
-		if err != nil {
-			t.Errorf("Error: %v", err)
-		}
+		t.Errorf("Error: %s", err)
 	}
 	t.Logf("LimitOrder(TifIoc, ETH, 0.01, 1234.1, false, 0x1234567890abcdef1234567890abcdef): %v", res4)
 
