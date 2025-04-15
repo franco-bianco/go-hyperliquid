@@ -43,7 +43,11 @@ func (api *ExchangeAPI) SignL1Action(action any, timestamp uint64) (byte, [32]by
 }
 
 func (api *ExchangeAPI) BuildEIP712Message(action any, timestamp uint64) (*SignRequest, error) {
-	hash, err := buildActionHash(action, "", timestamp)
+	var vaultAddress string
+	if api.AccountAddress() != "" {
+		vaultAddress = api.AccountAddress()
+	}
+	hash, err := buildActionHash(action, vaultAddress, timestamp)
 	if err != nil {
 		return nil, err
 	}
