@@ -150,11 +150,16 @@ func (api *ExchangeAPI) BulkOrders(requests []OrderRequest, grouping Grouping, i
 		api.debug("Error signing L1 action: %s", err)
 		return nil, err
 	}
+	var vaultAddress *string
+	if api.AccountAddress() != "" {
+		addr := api.AccountAddress()
+		vaultAddress = &addr
+	}
 	request := ExchangeRequest{
 		Action:       action,
 		Nonce:        timestamp,
 		Signature:    ToTypedSig(r, s, v),
-		VaultAddress: nil,
+		VaultAddress: vaultAddress,
 	}
 	return MakeUniversalRequest[OrderResponse](api, request)
 }
@@ -172,11 +177,16 @@ func (api *ExchangeAPI) BulkCancelOrders(cancels []CancelOidWire) (*OrderRespons
 		api.debug("Error signing L1 action: %s", err)
 		return nil, err
 	}
+	var vaultAddress *string
+	if api.AccountAddress() != "" {
+		addr := api.AccountAddress()
+		vaultAddress = &addr
+	}
 	request := ExchangeRequest{
 		Action:       action,
 		Nonce:        timestamp,
 		Signature:    ToTypedSig(r, s, v),
-		VaultAddress: nil,
+		VaultAddress: vaultAddress,
 	}
 	return MakeUniversalRequest[OrderResponse](api, request)
 }
@@ -199,11 +209,16 @@ func (api *ExchangeAPI) BulkModifyOrders(modifyRequests []ModifyOrderRequest, is
 	if signErr != nil {
 		return nil, signErr
 	}
+	var vaultAddress *string
+	if api.AccountAddress() != "" {
+		addr := api.AccountAddress()
+		vaultAddress = &addr
+	}
 	request := ExchangeRequest{
 		Action:       action,
 		Nonce:        timestamp,
 		Signature:    ToTypedSig(rVal, sVal, vVal),
-		VaultAddress: nil,
+		VaultAddress: vaultAddress,
 	}
 	return MakeUniversalRequest[OrderResponse](api, request)
 }
@@ -226,11 +241,16 @@ func (api *ExchangeAPI) CancelOrderByCloid(coin string, clientOID string) (*Orde
 		api.debug("Error signing L1 action: %s", err)
 		return nil, err
 	}
+	var vaultAddress *string
+	if api.AccountAddress() != "" {
+		addr := api.AccountAddress()
+		vaultAddress = &addr
+	}
 	request := ExchangeRequest{
 		Action:       action,
 		Nonce:        timestamp,
 		Signature:    ToTypedSig(r, s, v),
-		VaultAddress: nil,
+		VaultAddress: vaultAddress,
 	}
 	return MakeUniversalRequest[OrderResponse](api, request)
 }
@@ -250,11 +270,16 @@ func (api *ExchangeAPI) UpdateLeverage(coin string, isCross bool, leverage int) 
 		api.debug("Error signing L1 action: %s", err)
 		return nil, err
 	}
+	var vaultAddress *string
+	if api.AccountAddress() != "" {
+		addr := api.AccountAddress()
+		vaultAddress = &addr
+	}
 	request := ExchangeRequest{
 		Action:       action,
 		Nonce:        timestamp,
 		Signature:    ToTypedSig(r, s, v),
-		VaultAddress: nil,
+		VaultAddress: vaultAddress,
 	}
 	return MakeUniversalRequest[DefaultExchangeResponse](api, request)
 }
