@@ -162,10 +162,7 @@ func PriceToWire(x float64, maxDecimals, szDecimals int) string {
 	if x >= 1 {
 		// Count digits in the integer part.
 		digits := int(math.Floor(math.Log10(x))) + 1
-		allowedSig = 5 - digits
-		if allowedSig < 0 {
-			allowedSig = 0
-		}
+		allowedSig = max(5-digits, 0)
 	} else {
 		// For x < 1, determine the effective exponent.
 		exponent := int(math.Ceil(-math.Log10(x)))
@@ -173,13 +170,7 @@ func PriceToWire(x float64, maxDecimals, szDecimals int) string {
 	}
 
 	// Final allowed decimals is the minimum of the tick rule and the significant figures rule.
-	allowedDecimals := allowedTick
-	if allowedSig < allowedDecimals {
-		allowedDecimals = allowedSig
-	}
-	if allowedDecimals < 0 {
-		allowedDecimals = 0
-	}
+	allowedDecimals := max(min(allowedTick, allowedSig), 0)
 
 	// Round the price to allowedDecimals decimals.
 	factor := pow10(allowedDecimals)
@@ -218,10 +209,10 @@ func SizeToWire(x float64, szDecimals int) string {
 }
 
 // To sign raw messages via EIP-712
-func StructToMap(strct any) (res map[string]interface{}, err error) {
+func StructToMap(strct any) (res map[string]any, err error) {
 	a, err := json.Marshal(strct)
 	if err != nil {
-		return map[string]interface{}{}, err
+		return map[string]any{}, err
 	}
 	json.Unmarshal(a, &res)
 	return res, nil

@@ -84,7 +84,7 @@ func (api *InfoAPI) GetAllSpotPrices() (*map[string]string, error) {
 		return nil, err
 	}
 
-	marketsData, ok := response[1].([]interface{})
+	marketsData, ok := response[1].([]any)
 	if !ok {
 		return nil, fmt.Errorf("invalid markets data format")
 	}

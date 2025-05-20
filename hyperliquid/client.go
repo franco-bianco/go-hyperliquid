@@ -79,7 +79,7 @@ func NewClient(isMainnet bool) *Client {
 }
 
 // debug prints the debug messages.
-func (client *Client) debug(format string, v ...interface{}) {
+func (client *Client) debug(format string, v ...any) {
 	if client.Debug {
 		client.Logger.Debugf(format, v...)
 	}

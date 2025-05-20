@@ -1,49 +1,50 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/franco-bianco/go-hyperliquid/hyperliquid/hyperliquid"
 	"github.com/joho/godotenv"
-	"github.com/k0kubun/pp"
 	"github.com/sirupsen/logrus"
 )
 
 func main() {
-	godotenv.Load()
-
 	log := logrus.New()
-	log.SetLevel(logrus.DebugLevel)
 	log.SetFormatter(&logrus.TextFormatter{
 		FullTimestamp:   true,
 		ForceColors:     true,
 		TimestampFormat: "2006-01-02 15:04:05",
 	})
 
-	apiWalletPrivateKey := os.Getenv("API_WALLET_PRIVATE_KEY")
-	vaultAddress := os.Getenv("VAULT_ADDRESS")
+	godotenv.Load()
 
-	hyperliquidClient := hyperliquid.NewHyperliquid(&hyperliquid.HyperliquidClientConfig{
-		IsMainnet:      true,
-		PrivateKey:     apiWalletPrivateKey,
-		AccountAddress: vaultAddress,
-	})
-	hyperliquidClient.SetDebugActive()
-
-	orderRes, err := hyperliquidClient.ExchangeAPI.Order(hyperliquid.OrderRequest{
-		Coin:    "ETH",
-		IsBuy:   false,
-		Sz:      0.1,
-		LimitPx: 1700,
-		OrderType: hyperliquid.OrderType{
-			Limit: &hyperliquid.LimitOrderType{
-				Tif: hyperliquid.TifGtc,
-			},
-		},
-	}, hyperliquid.GroupingNa)
+	ws := hyperliquid.NewWebSocketAPI(true)
+	err := ws.Connect()
 	if err != nil {
-		log.Fatalf("error placing order: %s", err)
+		log.Fatalf("failed to connect: %s", err)
+	}
+	defer ws.Disconnect()
+
+	userAddress := os.Getenv("VAULT_ADDRESS")
+	err = ws.SubscribeToOrderUpdates(userAddress, func(orders []hyperliquid.WsOrder) {
+		data, _ := json.Marshal(orders)
+		fmt.Println(string(data))
+	})
+
+	if err != nil {
+		log.Fatalf("failed to subscribe: %s", err)
 	}
 
-	pp.Println(orderRes)
+	log.Info("listening for order updates...")
+	log.Info("press CTRL+C to exit")
+
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+	<-sigChan
+
+	fmt.Println("\nshutting down...")
 }

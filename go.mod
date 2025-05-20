@@ -4,8 +4,8 @@ go 1.24.1
 
 require (
 	github.com/ethereum/go-ethereum v1.15.8
+	github.com/gorilla/websocket v1.5.3
 	github.com/joho/godotenv v1.5.1
-	github.com/k0kubun/pp v3.0.1+incompatible
 	github.com/sirupsen/logrus v1.9.3
 	github.com/vmihailenco/msgpack/v5 v5.4.1
 )
@@ -20,9 +20,6 @@ require (
 	github.com/ethereum/c-kzg-4844 v1.0.0 // indirect
 	github.com/ethereum/go-verkle v0.2.2 // indirect
 	github.com/holiman/uint256 v1.3.2 // indirect
-	github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88 // indirect
-	github.com/mattn/go-colorable v0.1.13 // indirect
-	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mmcloughlin/addchain v0.4.0 // indirect
 	github.com/supranational/blst v0.3.14 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect

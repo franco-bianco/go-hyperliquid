@@ -6,6 +6,10 @@ const GLOBAL_DEBUG = false // Default debug that is used in all tests
 const MAINNET_API_URL = "https://api.hyperliquid.xyz"
 const TESTNET_API_URL = "https://api.hyperliquid-testnet.xyz"
 
+// WebSocket constants
+const MAINNET_WS_URL = "wss://api.hyperliquid.xyz/ws"
+const TESTNET_WS_URL = "wss://api.hyperliquid-testnet.xyz/ws"
+
 // Execution constants
 const DEFAULT_SLIPPAGE = 0.005 // 0.5% default slippage
 const SPOT_MAX_DECIMALS = 8    // Default decimals for spot

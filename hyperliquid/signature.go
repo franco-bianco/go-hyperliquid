@@ -16,7 +16,7 @@ import (
 type SignRequest struct {
 	PrimaryType string
 	DType       []apitypes.Type
-	DTypeMsg    map[string]interface{}
+	DTypeMsg    map[string]any
 	IsMainNet   bool
 	DomainName  string
 }

@@ -218,7 +218,7 @@ type RatesLimits struct {
 	NRequestsCap  int     `json:"nRequestsCap"`
 }
 
-type SpotMetaAndAssetCtxsResponse [2]interface{} // Array of exactly 2 elements
+type SpotMetaAndAssetCtxsResponse [2]any // Array of exactly 2 elements
 
 type Market struct {
 	PrevDayPx         string `json:"prevDayPx,omitempty"`

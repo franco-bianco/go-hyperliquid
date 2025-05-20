@@ -20,7 +20,7 @@ func (e APIError) Error() string {
 // It has a debug method that takes a format string and args and returns nothing.
 // It has an Endpoint method that returns a string.
 type IAPIService interface {
-	debug(format string, args ...interface{})
+	debug(format string, args ...any)
 	Request(path string, payload any) ([]byte, error)
 	Endpoint() string
 	KeyManager() *PKeyManager
@@ -51,7 +51,7 @@ func MakeUniversalRequest[T any](api IAPIService, request any) (*T, error) {
 		return &result, nil
 	}
 
-	var errResult map[string]interface{}
+	var errResult map[string]any
 	err = json.Unmarshal(response, &errResult)
 	if err != nil {
 		api.debug("Error second json.Unmarshal: %s", err)
