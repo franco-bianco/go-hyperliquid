@@ -273,8 +273,6 @@ func (api *WebSocketAPI) processMessage(message []byte) {
 		return
 	}
 
-	fmt.Println(string(message))
-
 	if response.Channel == "post" {
 		var postResponseData map[string]interface{}
 		err = json.Unmarshal(message, &postResponseData)
