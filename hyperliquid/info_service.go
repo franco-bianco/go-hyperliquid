@@ -3,6 +3,8 @@ package hyperliquid
 import (
 	"encoding/json"
 	"fmt"
+	"maps"
+	"math"
 	"strconv"
 )
 
@@ -438,4 +440,19 @@ func (api *InfoAPI) BuildSpotMetaMap() (map[string]AssetInfo, error) {
 		}
 	}
 	return metaMap, nil
+}
+
+// MinLotSizeMap returns a map from asset symbol to its minimum lot size step (1/10^szDecimals).
+func (api *InfoAPI) MinLotSizeMap() (map[string]float64, error) {
+	meta, err := api.BuildMetaMap()
+	if err != nil {
+		return nil, err
+	}
+	maps.Copy(meta, api.spotMeta)
+
+	res := make(map[string]float64, len(meta))
+	for asset, info := range meta {
+		res[asset] = math.Pow10(-info.SzDecimals)
+	}
+	return res, nil
 }
