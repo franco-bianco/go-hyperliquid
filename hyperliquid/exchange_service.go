@@ -29,6 +29,9 @@ type IExchangeAPI interface {
 	Withdraw(destination string, amount float64) (*WithdrawResponse, error)
 	UpdateLeverage(coin string, isCross bool, leverage int) (any, error)
 	TransferUsdClass(amount float64, toPerp bool, subaccount *string) (*DefaultExchangeResponse, error)
+	
+	// Market metadata
+	GetCachedFuturesMarketPrecision() map[string]int
 }
 
 // Implement the IExchangeAPI interface.
@@ -493,4 +496,21 @@ func (api *ExchangeAPI) TransferUsdClass(amount float64, toPerp bool, subaccount
 	}
 
 	return MakeUniversalRequest[DefaultExchangeResponse](api, request)
+}
+
+// GetCachedFuturesMarketPrecision returns the cached market precision (szDecimals) for perpetual futures.
+// This uses the metadata that was already fetched during ExchangeAPI initialization, avoiding additional API calls.
+// The actual minimum lot size step can be calculated as 1/10^szDecimals.
+//
+// Example:
+//   - If szDecimals = 3, then minimum lot size step = 0.001
+//   - If szDecimals = 0, then minimum lot size step = 1.0
+//
+// This function only returns data for perpetual futures, not spot markets.
+func (api *ExchangeAPI) GetCachedFuturesMarketPrecision() map[string]int {
+	res := make(map[string]int, len(api.meta))
+	for asset, info := range api.meta {
+		res[asset] = info.SzDecimals
+	}
+	return res
 }

@@ -67,3 +67,15 @@ func (h *Hyperliquid) AccountAddress() string {
 func (h *Hyperliquid) IsMainnet() bool {
 	return h.ExchangeAPI.IsMainnet()
 }
+
+// GetFuturesMarketPrecision returns a map from perpetual futures symbol to its size decimals (szDecimals).
+// This uses the cached metadata that was already fetched during initialization, avoiding additional API calls.
+// Use this to initialize precision for each market when setting up your trading client.
+//
+// The actual minimum lot size step can be calculated as 1/10^szDecimals.
+// Example:
+//   - If szDecimals = 3, then minimum lot size step = 0.001
+//   - If szDecimals = 0, then minimum lot size step = 1.0
+func (h *Hyperliquid) GetFuturesMarketPrecision() map[string]int {
+	return h.ExchangeAPI.GetCachedFuturesMarketPrecision()
+}
